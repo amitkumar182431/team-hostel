@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Hostel Store — Admin</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Poppins',sans-serif;background:#f5f6fa;color:#222;}
+header{background:linear-gradient(90deg,#6a11cb,#2575fc);color:#fff;padding:14px 20px;text-align:center;}
+header h1{margin:0;font-size:22px;}
+.container{max-width:1100px;margin:20px auto;padding:0 20px;}
+table{width:100%;border-collapse:collapse;margin-top:20px;}
+th, td{padding:8px;border-bottom:1px solid #ddd;text-align:center;}
+th{background:#6a11cb;color:#fff;}
+input, select{padding:6px;margin:4px;}
+button{padding:6px 12px;border:none;border-radius:6px;background:#2575fc;color:#fff;cursor:pointer;margin:2px;}
+button.delete{background:#dc3545;}
+button.save{background:#28a745;}
+.highlight{color:#d63384;font-weight:700;}
+#productForm{background:#fff;padding:12px;border-radius:8px;box-shadow:0 6px 15px rgba(0,0,0,0.08);margin-top:12px;}
+</style>
+</head>
+<body>
+
+<header>
+<h1>🏫 Hostel Store — Admin Panel</h1>
+</header>
+
+<div class="container" id="loginBox">
+  <h3>Admin Login</h3>
+  <input type="password" id="adminPass" placeholder="Enter Password">
+  <button onclick="checkPass()">Login</button>
+  <p id="loginMsg" style="color:red;"></p>
+</div>
+
+<div class="container" id="adminContent" style="display:none;">
+  <h3>🛒 Orders</h3>
+  <table id="ordersTable">
+    <thead>
+      <tr><th>Name</th><th>Room No.</th><th>Mobile</th><th>Items</th><th>Total</th><th>Time</th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <h3>📦 Products</h3>
+  <table id="productsTable">
+    <thead>
+      <tr><th>Name</th><th>Price</th><th>Qty</th><th>Image</th><th>Actions</th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <div id="productForm">
+    <h4 id="formTitle">Add / Edit Product</h4>
+    <input type="hidden" id="prodId">
+    <label>Name: <input type="text" id="prodName"></label>
+    <label>Price: <input type="number" id="prodPrice"></label>
+    <label>Quantity: <input type="number" id="prodQty"></label>
+    <label>Image URL: <input type="text" id="prodImg" placeholder="images/..."></label>
+    <button class="save" onclick="saveProduct()">Save</button>
+    <button onclick="resetForm()">Cancel</button>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+import { getDatabase, ref, set, push, onValue, update, remove } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-database.js";
+
+// Firebase config
+const firebaseConfig = {
+    apiKey: "AIzaSyDNydfUK5s01jN7eru8Ztdd5OnMbzfQz-Q",
+    authDomain: "hostel-store-5ec6d.firebaseapp.com",
+    databaseURL: "https://hostel-store-5ec6d-default-rtdb.firebaseio.com",
+    projectId: "hostel-store-5ec6d",
+    storageBucket: "hostel-store-5ec6d.firebasestorage.app",
+    messagingSenderId: "22085722439",
+    appId: "1:22085722439:web:3ac4eedf29cb9a09b9ec62",
+    measurementId: "G-558H946W89"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+// Anti-inspect
+document.addEventListener("contextmenu", e=>e.preventDefault());
+document.addEventListener("keydown", e=>{
+  if(e.key==="F12"||(e.ctrlKey && e.shiftKey && ["I","C","J"].includes(e.key))) e.preventDefault();
+});
+
+const HARD_PASS="admin123";
+window.checkPass=function(){
+  if(document.getElementById("adminPass").value===HARD_PASS){
+    document.getElementById("loginBox").style.display="none";
+    document.getElementById("adminContent").style.display="block";
+    loadOrders();
+    loadProducts();
+  } else { document.getElementById("loginMsg").textContent="Incorrect password"; }
+}
+
+// --- ORDERS ---
+function loadOrders(){
+  const ordersRef = ref(db,"orders");
+  onValue(ordersRef, snap=>{
+    const tbody = document.querySelector("#ordersTable tbody");
+    tbody.innerHTML="";
+    const data = snap.val()||{};
+    Object.values(data).forEach(o=>{
+      tbody.innerHTML+=`<tr>
+        <td>${o.name}</td>
+        <td>${o.roomNo}</td>
+        <td>${o.mobileNo}</td>
+        <td>${o.items.map(i=>i.name+" x"+i.qty).join(", ")}</td>
+        <td>₹${o.total}</td>
+        <td>${new Date(o.timestamp).toLocaleString()}</td>
+      </tr>`;
+    });
+  });
+}
+
+// --- PRODUCTS ---
+let editingId=null;
+function loadProducts(){
+  const prodRef = ref(db,"items");
+  onValue(prodRef, snap=>{
+    const tbody=document.querySelector("#productsTable tbody");
+    tbody.innerHTML="";
+    const data=snap.val()||{};
+    Object.keys(data).forEach(key=>{
+      const p=data[key];
+      tbody.innerHTML+=`<tr>
+        <td>${p.name}</td>
+        <td>₹${p.price}</td>
+        <td>${p.quantity}</td>
+        <td><img src="${p.img}" style="width:40px;height:40px;object-fit:contain;"></td>
+        <td>
+          <button onclick="editProduct('${key}')">Edit</button>
+          <button class="delete" onclick="deleteProduct('${key}')">Delete</button>
+        </td>
+      </tr>`;
+    });
+  });
+}
+
+window.editProduct=function(id){
+  editingId=id;
+  const prodRef=ref(db,"items/"+id);
+  onValue(prodRef,snap=>{
+    const p=snap.val();
+    document.getElementById("prodId").value=id;
+    document.getElementById("prodName").value=p.name;
+    document.getElementById("prodPrice").value=p.price;
+    document.getElementById("prodQty").value=p.quantity;
+    document.getElementById("prodImg").value=p.img;
+    document.getElementById("formTitle").textContent="Edit Product";
+  },{once:true});
+}
+
+window.deleteProduct=function(id){
+  if(confirm("Are you sure to delete?")) remove(ref(db,"items/"+id));
+}
+
+window.resetForm=function(){
+  editingId=null;
+  document.getElementById("prodId").value="";
+  document.getElementById("prodName").value="";
+  document.getElementById("prodPrice").value="";
+  document.getElementById("prodQty").value="";
+  document.getElementById("prodImg").value="";
+  document.getElementById("formTitle").textContent="Add / Edit Product";
+}
+
+window.saveProduct=function(){
+  const name=document.getElementById("prodName").value.trim();
+  const price=parseFloat(document.getElementById("prodPrice").value);
+  const qty=parseInt(document.getElementById("prodQty").value);
+  const img=document.getElementById("prodImg").value.trim();
+  if(!name || isNaN(price) || isNaN(qty) || !img){ alert("Fill all fields"); return; }
+  if(editingId){
+    update(ref(db,"items/"+editingId),{name,price,quantity:qty,img});
+  } else {
+    const newRef=push(ref(db,"items"));
+    set(newRef,{name,price,quantity:qty,img});
+  }
+  resetForm();
+}
+</script>
+</body>
+</html>
