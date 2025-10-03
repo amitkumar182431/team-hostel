@@ -4,58 +4,527 @@
 <meta charset="utf-8" />
 <title>Hostel Store — User</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-  body{margin:0;font-family:'Poppins',sans-serif;background:#f5f6fa;color:#222}
-  header{background:linear-gradient(90deg,#6a11cb,#2575fc);color:#fff;padding:14px 28px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10}
-  header h1{margin:0;font-size:20px}
-  nav a{color:#fff;margin-left:14px;text-decoration:none}
-  .container{max-width:1100px;margin:28px auto;padding:0 18px}
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:18px}
-  .card{background:#fff;padding:14px;border-radius:12px;box-shadow:0 8px 20px rgba(0,0,0,0.06);text-align:center}
-  .card img{width:100%;height:130px;object-fit:contain;border-radius:8px}
-  .card h3{margin:10px 0 6px;font-size:16px}
-  .price{font-weight:700;color:#2d7a36;margin-bottom:10px}
-  button{padding:8px 12px;border:0;border-radius:8px;background:linear-gradient(90deg,#ff512f,#dd2476);color:#fff;cursor:pointer}
-  #cartBox{margin-top:22px;background:#fff;padding:14px;border-radius:12px;box-shadow:0 8px 20px rgba(0,0,0,0.06)}
-  table{width:100%;border-collapse:collapse}
-  th,td{padding:8px;border-bottom:1px solid #eee;text-align:center}
-  input[type=number]{width:60px;padding:6px}
-  .muted{color:#666;font-size:13px}
-  .highlight{color:#d63384;font-weight:700}
-  @media(max-width:600px){.grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}}
+  :root {
+    --primary: #6a11cb;
+    --secondary: #2575fc;
+    --accent: #ff512f;
+    --accent-dark: #dd2476;
+    --success: #2d7a36;
+    --danger: #dc3545;
+    --light: #f5f6fa;
+    --dark: #222;
+    --white: #fff;
+    --gray: #666;
+    --shadow: 0 8px 20px rgba(0,0,0,0.08);
+    --shadow-hover: 0 12px 30px rgba(0,0,0,0.15);
+  }
+  
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: var(--light);
+    color: var(--dark);
+    line-height: 1.6;
+  }
+  
+  header {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: var(--white);
+    padding: 16px 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    animation: slideDown 0.5s ease;
+  }
+  
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  header h1 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  header h1::before {
+    content: '🏫';
+    font-size: 28px;
+    animation: pulse 2s infinite;
+  }
+  
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+  }
+  
+  nav {
+    display: flex;
+    gap: 24px;
+  }
+  
+  nav a {
+    color: var(--white);
+    text-decoration: none;
+    font-weight: 500;
+    position: relative;
+    padding: 6px 0;
+    transition: all 0.3s ease;
+  }
+  
+  nav a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--white);
+    transition: width 0.3s ease;
+  }
+  
+  nav a:hover::after {
+    width: 100%;
+  }
+  
+  .container {
+    max-width: 1200px;
+    margin: 30px auto;
+    padding: 0 20px;
+  }
+  
+  section {
+    margin-bottom: 40px;
+    animation: fadeIn 0.6s ease;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  h2 {
+    font-size: 26px;
+    margin-bottom: 24px;
+    color: var(--dark);
+    position: relative;
+    display: inline-block;
+  }
+  
+  h2::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 0;
+    width: 60px;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    border-radius: 2px;
+  }
+  
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 24px;
+  }
+  
+  .card {
+    background: var(--white);
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    animation: fadeInUp 0.5s ease;
+  }
+  
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-dark));
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+  }
+  
+  .card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-hover);
+  }
+  
+  .card:hover::before {
+    transform: scaleX(1);
+  }
+  
+  .card img {
+    width: 100%;
+    height: 150px;
+    object-fit: contain;
+    border-radius: 12px;
+    margin-bottom: 14px;
+    transition: transform 0.3s ease;
+  }
+  
+  .card:hover img {
+    transform: scale(1.08);
+  }
+  
+  .card h3 {
+    margin: 12px 0 8px;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--dark);
+  }
+  
+  .price {
+    font-weight: 700;
+    color: var(--success);
+    font-size: 20px;
+    margin-bottom: 8px;
+  }
+  
+  .stock-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 14px;
+    font-size: 13px;
+    color: var(--gray);
+  }
+  
+  .stock-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 12px;
+  }
+  
+  .stock-high {
+    background: #d4edda;
+    color: var(--success);
+  }
+  
+  .stock-low {
+    background: #f8d7da;
+    color: var(--danger);
+  }
+  
+  .card button {
+    padding: 11px 20px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+    color: var(--white);
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    width: 100%;
+    box-shadow: 0 4px 12px rgba(255, 81, 47, 0.3);
+  }
+  
+  .card button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 81, 47, 0.4);
+  }
+  
+  .card button:disabled {
+    background: linear-gradient(135deg, #ccc, #aaa);
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+  
+  #cartBox {
+    background: var(--white);
+    padding: 28px;
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+  }
+  
+  .cart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+  }
+  
+  th, td {
+    padding: 14px 10px;
+    text-align: center;
+    border-bottom: 1px solid #eee;
+  }
+  
+  th {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    font-weight: 600;
+    color: var(--dark);
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  tbody tr {
+    transition: background 0.2s ease;
+  }
+  
+  tbody tr:hover {
+    background: #f8f9fa;
+  }
+  
+  input[type=number] {
+    width: 70px;
+    padding: 8px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+  }
+  
+  input[type=number]:focus {
+    outline: none;
+    border-color: var(--primary);
+  }
+  
+  .remove-btn {
+    background: var(--danger);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+  }
+  
+  .remove-btn:hover {
+    background: #c82333;
+    transform: scale(1.05);
+  }
+  
+  .order-summary {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+  }
+  
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-size: 15px;
+  }
+  
+  .summary-row.total {
+    font-weight: 700;
+    font-size: 20px;
+    color: var(--primary);
+    padding-top: 10px;
+    border-top: 2px solid #dee2e6;
+    margin-top: 10px;
+  }
+  
+  .customer-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+  
+  .customer-info input {
+    padding: 12px 16px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 15px;
+    transition: all 0.3s ease;
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  .customer-info input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(106, 17, 203, 0.1);
+  }
+  
+  .place-order-btn {
+    width: 100%;
+    padding: 16px 24px;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 20px rgba(106, 17, 203, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  
+  .place-order-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(106, 17, 203, 0.4);
+  }
+  
+  #msg {
+    margin-top: 16px;
+    text-align: center;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: 500;
+  }
+  
+  #msg.success {
+    background: #d4edda;
+    color: var(--success);
+    border: 1px solid #c3e6cb;
+  }
+  
+  .empty-cart {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--gray);
+  }
+  
+  .empty-cart i {
+    font-size: 64px;
+    color: #dee2e6;
+    margin-bottom: 16px;
+  }
+  
+  .empty-cart p {
+    font-size: 18px;
+    margin-top: 10px;
+  }
+  
+  @media (max-width: 768px) {
+    .grid {
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 16px;
+    }
+    
+    .customer-info {
+      grid-template-columns: 1fr;
+    }
+    
+    header h1 {
+      font-size: 18px;
+    }
+    
+    nav {
+      gap: 16px;
+    }
+    
+    .container {
+      padding: 0 16px;
+    }
+  }
 </style>
 </head>
 <body>
 
 <header>
-  <h1>🏫 Hostel Store</h1>
-  <nav><a href="#productsSection">Products</a><a href="#cartBox">Cart</a></nav>
+  <h1>Hostel Store</h1>
+  <nav>
+    <a href="#productsSection"><i class="fas fa-store"></i> Products</a>
+    <a href="#cartBox"><i class="fas fa-shopping-cart"></i> Cart</a>
+  </nav>
 </header>
 
 <div class="container">
   <section id="productsSection">
-    <h2>Products</h2>
+    <h2>Our Products</h2>
     <div id="products" class="grid"></div>
   </section>
 
   <section id="cartBox">
-    <h2>🛒 Your Cart</h2>
-    <table id="cartTable">
-      <thead><tr><th>Product</th><th>Price</th><th>Qty</th><th>Subtotal</th><th>Action</th></tr></thead>
-      <tbody></tbody>
-    </table>
-    <div style="margin-top:12px">
-      <div class="muted">Subtotal: ₹<span id="subtotal">0</span></div>
-      <div style="margin-top:8px"><strong>Total: ₹<span id="total">0</span></strong></div>
+    <div class="cart-header">
+      <h2>Your Cart</h2>
     </div>
-    <div style="margin-top:12px">
-      <label><input id="custName" placeholder="Your name" style="padding:8px;width:32%;margin-right:8px"></label>
-      <label><input id="roomNo" placeholder="Room no." style="padding:8px;width:20%;margin-right:8px"></label>
-      <label><input id="mobileNo" placeholder="Mobile no." style="padding:8px;width:28%"></label>
+    
+    <div id="cartContent">
+      <table id="cartTable">
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Subtotal</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      
+      <div class="empty-cart" id="emptyCart" style="display: none;">
+        <i class="fas fa-shopping-cart"></i>
+        <p>Your cart is empty</p>
+      </div>
+      
+      <div class="order-summary">
+        <div class="summary-row">
+          <span>Subtotal:</span>
+          <span>₹<span id="subtotal">0</span></span>
+        </div>
+        <div class="summary-row total">
+          <span>Total:</span>
+          <span>₹<span id="total">0</span></span>
+        </div>
+      </div>
+      
+      <div class="customer-info">
+        <input id="custName" placeholder="Your name">
+        <input id="roomNo" placeholder="Room no.">
+        <input id="mobileNo" placeholder="Mobile no.">
+      </div>
+      
+      <button class="place-order-btn" onclick="placeOrder()">
+        <i class="fas fa-check-circle"></i>
+        <span>Place Order</span>
+      </button>
+      
+      <div id="msg"></div>
     </div>
-    <div style="margin-top:12px"><button onclick="placeOrder()">Place Order</button></div>
-    <p id="msg" class="muted"></p>
   </section>
 </div>
 
@@ -82,20 +551,17 @@
     if (e.key === "F12" || (e.ctrlKey && e.shiftKey && ["I","C","J"].includes(e.key))) e.preventDefault();
   });
 
-
-const defaultProducts = [
-  { id: "maggi15", name: "Maggi", price: 15, img: "images/maggi.png", quantity: 20 },
-  { id: "maggi20", name: "Maggi Double Masala", price: 20, img: "images/maggi_double.png", quantity: 15 },
-  { id: "oreo", name: "Oreo", price: 10, img: "images/oreo.png", quantity: 10 },
-  { id: "dark_fantasy", name: "Dark Fantasy", price: 30, img: "images/dark_fantasy.png", quantity: 7 },
-  { id: "lays_red", name: "Lays Red", price: 21, img: "images/lays_red.png", quantity: 12 },
-  { id: "lays_blue", name: "Lays Blue", price: 21, img: "images/lays_blue.png", quantity: 12 },
-  { id: "lays_green", name: "Lays Green", price: 21, img: "images/lays_green.png", quantity: 12 },
-  { id: "tedemede", name: "Tede Mede", price: 20, img: "images/lays_green.png", quantity: 12 },
-  { id: "kurkure", name: "Kurkure", price: 21, img: "images/kurkure.png", quantity: 15 }
-];
-
-  
+  const defaultProducts = [
+    { id: "maggi15", name: "Maggi", price: 15, img: "images/maggi.png", quantity: 20 },
+    { id: "maggi20", name: "Maggi Double Masala", price: 20, img: "images/maggi_double.png", quantity: 15 },
+    { id: "oreo", name: "Oreo", price: 10, img: "images/oreo.png", quantity: 10 },
+    { id: "dark_fantasy", name: "Dark Fantasy", price: 30, img: "images/dark_fantasy.png", quantity: 7 },
+    { id: "lays_red", name: "Lays Red", price: 21, img: "images/lays_red.png", quantity: 12 },
+    { id: "lays_blue", name: "Lays Blue", price: 21, img: "images/lays_blue.png", quantity: 12 },
+    { id: "lays_green", name: "Lays Green", price: 21, img: "images/lays_green.png", quantity: 12 },
+    { id: "tedemede", name: "Tede Mede", price: 20, img: "images/lays_green.png", quantity: 12 },
+    { id: "kurkure", name: "Kurkure", price: 21, img: "images/kurkure.png", quantity: 15 }
+  ];
 
   let productsMap = {};
   let cart = JSON.parse(localStorage.getItem("cart_v2")) || [];
@@ -116,15 +582,23 @@ const defaultProducts = [
     Object.keys(productsMap).forEach(id => {
       const p = productsMap[id];
       const outOf = p.quantity <= 0;
+      const stockClass = p.quantity > 5 ? 'stock-high' : 'stock-low';
+      const stockIcon = p.quantity > 5 ? 'fa-check-circle' : 'fa-exclamation-triangle';
+      
       container.innerHTML += `
         <div class="card">
           <img src="${p.img}" alt="${p.name}">
           <h3>${p.name}</h3>
           <div class="price">₹${p.price}</div>
-          <div class="muted">Remaining: <span class="highlight">${p.quantity}</span></div>
-          <div style="margin-top:10px">
-            <button ${outOf ? "disabled" : ""} onclick="addToCart('${id}')">${outOf ? "Out of stock" : "Add to cart"}</button>
+          <div class="stock-info">
+            <span class="stock-badge ${stockClass}">
+              <i class="fas ${stockIcon}"></i>
+              ${outOf ? 'Out of stock' : `${p.quantity} left`}
+            </span>
           </div>
+          <button ${outOf ? "disabled" : ""} onclick="addToCart('${id}')">
+            <i class="fas fa-cart-plus"></i> ${outOf ? "Out of stock" : "Add to cart"}
+          </button>
         </div>
       `;
     });
@@ -132,34 +606,61 @@ const defaultProducts = [
 
   function updateCartUI(){
     const tbody = document.querySelector("#cartTable tbody");
+    const emptyCart = document.getElementById("emptyCart");
+    const table = document.getElementById("cartTable");
+    
     tbody.innerHTML = "";
-    let subtotal = 0;
-    cart.forEach((c, idx) => {
-      const item = productsMap[c.id];
-      const itemTotal = item.price * c.qty;
-      subtotal += itemTotal;
-      tbody.innerHTML += `<tr>
-        <td>${item.name}</td>
-        <td>₹${item.price}</td>
-        <td><input type="number" value="${c.qty}" min="1" onchange="changeQty(${idx},this.value)"></td>
-        <td>₹${itemTotal}</td>
-        <td><button onclick="removeFromCart(${idx})">Remove</button></td>
-      </tr>`;
-    });
-    document.getElementById("subtotal").textContent = subtotal;
-    document.getElementById("total").textContent = subtotal;
+    
+    if (cart.length === 0) {
+      table.style.display = "none";
+      emptyCart.style.display = "block";
+    } else {
+      table.style.display = "table";
+      emptyCart.style.display = "none";
+      
+      let subtotal = 0;
+      cart.forEach((c, idx) => {
+        const item = productsMap[c.id];
+        if (!item) return;
+        
+        const itemTotal = item.price * c.qty;
+        subtotal += itemTotal;
+        tbody.innerHTML += `
+          <tr>
+            <td><strong>${item.name}</strong></td>
+            <td>₹${item.price}</td>
+            <td><input type="number" value="${c.qty}" min="1" onchange="changeQty(${idx},this.value)"></td>
+            <td><strong>₹${itemTotal}</strong></td>
+            <td><button class="remove-btn" onclick="removeFromCart(${idx})"><i class="fas fa-trash"></i></button></td>
+          </tr>
+        `;
+      });
+      
+      document.getElementById("subtotal").textContent = subtotal;
+      document.getElementById("total").textContent = subtotal;
+    }
+    
     localStorage.setItem("cart_v2", JSON.stringify(cart));
   }
 
   window.addToCart = function(id){
     const prod = productsMap[id];
-    if (!prod || prod.quantity <= 0) { alert("Out of stock"); return; }
+    if (!prod || prod.quantity <= 0) { 
+      showMessage("This product is out of stock", false);
+      return; 
+    }
     const existing = cart.find(x=>x.id===id);
     if (existing) {
-      if (prod.quantity < existing.qty + 1) { alert("Not enough stock"); return; }
+      if (prod.quantity < existing.qty + 1) { 
+        showMessage("Not enough stock available", false);
+        return; 
+      }
       existing.qty++;
-    } else cart.push({ id, qty: 1 });
+    } else {
+      cart.push({ id, qty: 1 });
+    }
     updateCartUI();
+    showMessage(`${prod.name} added to cart!`, true);
   }
 
   window.changeQty = function(index, qty){
@@ -167,7 +668,11 @@ const defaultProducts = [
     const id = cart[index].id;
     const prod = productsMap[id];
     if (qty < 1) return;
-    if (prod.quantity < qty) { alert("Not enough stock"); updateCartUI(); return; }
+    if (prod.quantity < qty) { 
+      showMessage("Not enough stock available", false);
+      updateCartUI(); 
+      return; 
+    }
     cart[index].qty = qty;
     updateCartUI();
   }
@@ -177,45 +682,82 @@ const defaultProducts = [
     updateCartUI();
   }
 
+  function showMessage(text, isSuccess) {
+    const msg = document.getElementById("msg");
+    msg.textContent = text;
+    msg.className = isSuccess ? 'success' : '';
+    msg.style.display = 'block';
+    setTimeout(() => { msg.style.display = 'none'; }, 4000);
+  }
+
   async function placeOrder(){
-    if (cart.length === 0) { alert("Cart is empty"); return; }
+    if (cart.length === 0) { 
+      showMessage("Your cart is empty", false);
+      return; 
+    }
+    
     const name = document.getElementById("custName").value.trim();
     const room = document.getElementById("roomNo").value.trim();
     const mobile = document.getElementById("mobileNo").value.trim();
-    if (!name || !room || !mobile) { alert("Please fill name, room and mobile"); return; }
+    
+    if (!name || !room || !mobile) { 
+      showMessage("Please fill in all your details", false);
+      return; 
+    }
 
     try {
       const itemsRef = ref(db, "items");
       const snap = await get(itemsRef);
-      if (!snap.exists()) { alert("Items unavailable"); return; }
+      if (!snap.exists()) { 
+        showMessage("Items unavailable", false);
+        return; 
+      }
+      
       const items = snap.val();
 
       for (const c of cart) {
         const stored = items[c.id];
         if (!stored || stored.quantity < c.qty) {
-          alert(`Not enough ${stored.name}. Available: ${stored.quantity}`); return;
+          showMessage(`Not enough ${stored.name}. Available: ${stored.quantity}`, false);
+          return;
         }
       }
 
       const updates = {};
-      cart.forEach(c => updates[`items/${c.id}/quantity`] = items[c.id].quantity - c.qty );
+      cart.forEach(c => updates[`items/${c.id}/quantity`] = items[c.id].quantity - c.qty);
 
       const order = {
-        name, roomNo: room, mobileNo: mobile,
-        items: cart.map(c => ({ id: c.id, name: items[c.id].name, qty: c.qty, price: items[c.id].price })),
+        name, 
+        roomNo: room, 
+        mobileNo: mobile,
+        items: cart.map(c => ({ 
+          id: c.id, 
+          name: items[c.id].name, 
+          qty: c.qty, 
+          price: items[c.id].price 
+        })),
         total: document.getElementById("total").textContent,
         timestamp: new Date().toISOString()
       };
 
       const newOrderRef = push(ref(db, "orders"));
-      await Promise.all([ set(newOrderRef, order), update(ref(db, "/"), updates) ]);
+      await Promise.all([
+        set(newOrderRef, order), 
+        update(ref(db, "/"), updates)
+      ]);
 
-      document.getElementById("msg").textContent = "✅ Order placed successfully!";
+      document.getElementById("custName").value = "";
+      document.getElementById("roomNo").value = "";
+      document.getElementById("mobileNo").value = "";
+      
       cart = [];
       updateCartUI();
-      setTimeout(()=>{ document.getElementById("msg").textContent = ""; }, 4000);
+      showMessage("Order placed successfully! We'll deliver to your room shortly.", true);
 
-    } catch (err) { console.error(err); alert("Error placing order: "+err.message); }
+    } catch (err) { 
+      console.error(err); 
+      showMessage("Error placing order: " + err.message, false);
+    }
   }
 
   window.placeOrder = placeOrder;
@@ -225,7 +767,9 @@ const defaultProducts = [
     onValue(itemsRef, (snap) => {
       const data = snap.val() || {};
       productsMap = {};
-      Object.keys(data).forEach(key => { productsMap[key] = { ...data[key], id:key }; });
+      Object.keys(data).forEach(key => { 
+        productsMap[key] = { ...data[key], id:key }; 
+      });
       renderProducts();
       updateCartUI();
     });
@@ -239,6 +783,3 @@ const defaultProducts = [
 
 </body>
 </html>
-
-
-
