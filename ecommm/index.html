@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Hostel Store — User</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  body{margin:0;font-family:'Poppins',sans-serif;background:#f5f6fa;color:#222}
+  header{background:linear-gradient(90deg,#6a11cb,#2575fc);color:#fff;padding:14px 28px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10}
+  header h1{margin:0;font-size:20px}
+  nav a{color:#fff;margin-left:14px;text-decoration:none}
+  .container{max-width:1100px;margin:28px auto;padding:0 18px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:18px}
+  .card{background:#fff;padding:14px;border-radius:12px;box-shadow:0 8px 20px rgba(0,0,0,0.06);text-align:center}
+  .card img{width:100%;height:130px;object-fit:contain;border-radius:8px}
+  .card h3{margin:10px 0 6px;font-size:16px}
+  .price{font-weight:700;color:#2d7a36;margin-bottom:10px}
+  button{padding:8px 12px;border:0;border-radius:8px;background:linear-gradient(90deg,#ff512f,#dd2476);color:#fff;cursor:pointer}
+  #cartBox{margin-top:22px;background:#fff;padding:14px;border-radius:12px;box-shadow:0 8px 20px rgba(0,0,0,0.06)}
+  table{width:100%;border-collapse:collapse}
+  th,td{padding:8px;border-bottom:1px solid #eee;text-align:center}
+  input[type=number]{width:60px;padding:6px}
+  .muted{color:#666;font-size:13px}
+  .highlight{color:#d63384;font-weight:700}
+  @media(max-width:600px){.grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🏫 Hostel Store</h1>
+  <nav><a href="#productsSection">Products</a><a href="#cartBox">Cart</a></nav>
+</header>
+
+<div class="container">
+  <section id="productsSection">
+    <h2>Products</h2>
+    <div id="products" class="grid"></div>
+  </section>
+
+  <section id="cartBox">
+    <h2>🛒 Your Cart</h2>
+    <table id="cartTable">
+      <thead><tr><th>Product</th><th>Price</th><th>Qty</th><th>Subtotal</th><th>Action</th></tr></thead>
+      <tbody></tbody>
+    </table>
+    <div style="margin-top:12px">
+      <div class="muted">Subtotal: ₹<span id="subtotal">0</span></div>
+      <div style="margin-top:8px"><strong>Total: ₹<span id="total">0</span></strong></div>
+    </div>
+    <div style="margin-top:12px">
+      <label><input id="custName" placeholder="Your name" style="padding:8px;width:32%;margin-right:8px"></label>
+      <label><input id="roomNo" placeholder="Room no." style="padding:8px;width:20%;margin-right:8px"></label>
+      <label><input id="mobileNo" placeholder="Mobile no." style="padding:8px;width:28%"></label>
+    </div>
+    <div style="margin-top:12px"><button onclick="placeOrder()">Place Order</button></div>
+    <p id="msg" class="muted"></p>
+  </section>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+  import { getDatabase, ref, get, set, push, update, onValue } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDNydfUK5s01jN7eru8Ztdd5OnMbzfQz-Q",
+    authDomain: "hostel-store-5ec6d.firebaseapp.com",
+    databaseURL: "https://hostel-store-5ec6d-default-rtdb.firebaseio.com",
+    projectId: "hostel-store-5ec6d",
+    storageBucket: "hostel-store-5ec6d.firebasestorage.app",
+    messagingSenderId: "22085722439",
+    appId: "1:22085722439:web:3ac4eedf29cb9a09b9ec62",
+    measurementId: "G-558H946W89"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  document.addEventListener("contextmenu", e => e.preventDefault());
+  document.addEventListener("keydown", e => {
+    if (e.key === "F12" || (e.ctrlKey && e.shiftKey && ["I","C","J"].includes(e.key))) e.preventDefault();
+  });
+
+  const defaultProducts = [
+    { id: "maggi", name: "Maggi", price: 15, img: "images/maggi.png", quantity: 10 },
+    { id: "double masala maggi", name: "double masala maggi", price: 40, img: "images/family_maggi.png", quantity: 5 },
+    { id: "oreo", name: "Oreo", price: 30, img: "images/oreo.png", quantity: 8 },
+    { id: "dark_fantasy", name: "Dark Fantasy", price: 50, img: "images/dark_fantasy.png", quantity: 7 },
+    { id: "Lays1", name: "Lays1", price: 20, img: "lay1.png", quantity: 12 },
+    { id: "kurkure", name: "Kurkure", price: 20, img: "images/kurkure.png", quantity: 15 },
+    { id: "Lays2", name: "Lays2", price: 5, img: "images/a4.png", quantity: 50 },
+    { id: "Lays3", name: "Lays3", price: 25, img: "images/lab_file.png", quantity: 10 },
+    { id: "Tede Mede", name: "Tede Mede", price: 25, img: "images/lab_file.png", quantity: 10 },
+    { id: "Oreo", name: "Oreo", price: 15, img: "images/file.png", quantity: 20 }
+  ];
+
+  let productsMap = {};
+  let cart = JSON.parse(localStorage.getItem("cart_v2")) || [];
+
+  async function seedItemsIfEmpty(){
+    const itemsRef = ref(db, "items");
+    const snap = await get(itemsRef);
+    if (!snap.exists()) {
+      const updates = {};
+      defaultProducts.forEach(p => updates[p.id] = { name:p.name, price:p.price, img:p.img, quantity:p.quantity });
+      await set(itemsRef, updates);
+    }
+  }
+
+  function renderProducts(){
+    const container = document.getElementById("products");
+    container.innerHTML = "";
+    Object.keys(productsMap).forEach(id => {
+      const p = productsMap[id];
+      const outOf = p.quantity <= 0;
+      container.innerHTML += `
+        <div class="card">
+          <img src="${p.img}" alt="${p.name}">
+          <h3>${p.name}</h3>
+          <div class="price">₹${p.price}</div>
+          <div class="muted">Remaining: <span class="highlight">${p.quantity}</span></div>
+          <div style="margin-top:10px">
+            <button ${outOf ? "disabled" : ""} onclick="addToCart('${id}')">${outOf ? "Out of stock" : "Add to cart"}</button>
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  function updateCartUI(){
+    const tbody = document.querySelector("#cartTable tbody");
+    tbody.innerHTML = "";
+    let subtotal = 0;
+    cart.forEach((c, idx) => {
+      const item = productsMap[c.id];
+      const itemTotal = item.price * c.qty;
+      subtotal += itemTotal;
+      tbody.innerHTML += `<tr>
+        <td>${item.name}</td>
+        <td>₹${item.price}</td>
+        <td><input type="number" value="${c.qty}" min="1" onchange="changeQty(${idx},this.value)"></td>
+        <td>₹${itemTotal}</td>
+        <td><button onclick="removeFromCart(${idx})">Remove</button></td>
+      </tr>`;
+    });
+    document.getElementById("subtotal").textContent = subtotal;
+    document.getElementById("total").textContent = subtotal;
+    localStorage.setItem("cart_v2", JSON.stringify(cart));
+  }
+
+  window.addToCart = function(id){
+    const prod = productsMap[id];
+    if (!prod || prod.quantity <= 0) { alert("Out of stock"); return; }
+    const existing = cart.find(x=>x.id===id);
+    if (existing) {
+      if (prod.quantity < existing.qty + 1) { alert("Not enough stock"); return; }
+      existing.qty++;
+    } else cart.push({ id, qty: 1 });
+    updateCartUI();
+  }
+
+  window.changeQty = function(index, qty){
+    qty = parseInt(qty) || 1;
+    const id = cart[index].id;
+    const prod = productsMap[id];
+    if (qty < 1) return;
+    if (prod.quantity < qty) { alert("Not enough stock"); updateCartUI(); return; }
+    cart[index].qty = qty;
+    updateCartUI();
+  }
+
+  window.removeFromCart = function(index){
+    cart.splice(index,1);
+    updateCartUI();
+  }
+
+  async function placeOrder(){
+    if (cart.length === 0) { alert("Cart is empty"); return; }
+    const name = document.getElementById("custName").value.trim();
+    const room = document.getElementById("roomNo").value.trim();
+    const mobile = document.getElementById("mobileNo").value.trim();
+    if (!name || !room || !mobile) { alert("Please fill name, room and mobile"); return; }
+
+    try {
+      const itemsRef = ref(db, "items");
+      const snap = await get(itemsRef);
+      if (!snap.exists()) { alert("Items unavailable"); return; }
+      const items = snap.val();
+
+      for (const c of cart) {
+        const stored = items[c.id];
+        if (!stored || stored.quantity < c.qty) {
+          alert(`Not enough ${stored.name}. Available: ${stored.quantity}`); return;
+        }
+      }
+
+      const updates = {};
+      cart.forEach(c => updates[`items/${c.id}/quantity`] = items[c.id].quantity - c.qty );
+
+      const order = {
+        name, roomNo: room, mobileNo: mobile,
+        items: cart.map(c => ({ id: c.id, name: items[c.id].name, qty: c.qty, price: items[c.id].price })),
+        total: document.getElementById("total").textContent,
+        timestamp: new Date().toISOString()
+      };
+
+      const newOrderRef = push(ref(db, "orders"));
+      await Promise.all([ set(newOrderRef, order), update(ref(db, "/"), updates) ]);
+
+      document.getElementById("msg").textContent = "✅ Order placed successfully!";
+      cart = [];
+      updateCartUI();
+      setTimeout(()=>{ document.getElementById("msg").textContent = ""; }, 4000);
+
+    } catch (err) { console.error(err); alert("Error placing order: "+err.message); }
+  }
+
+  window.placeOrder = placeOrder;
+
+  function startItemsListener(){
+    const itemsRef = ref(db, "items");
+    onValue(itemsRef, (snap) => {
+      const data = snap.val() || {};
+      productsMap = {};
+      Object.keys(data).forEach(key => { productsMap[key] = { ...data[key], id:key }; });
+      renderProducts();
+      updateCartUI();
+    });
+  }
+
+  (async function init(){
+    await seedItemsIfEmpty();
+    startItemsListener();
+  })();
+</script>
+
+</body>
+</html>
