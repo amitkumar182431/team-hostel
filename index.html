@@ -82,7 +82,7 @@
     if (e.key === "F12" || (e.ctrlKey && e.shiftKey && ["I","C","J"].includes(e.key))) e.preventDefault();
   });
 
-  const defaultProducts = [
+
 const defaultProducts = [
   { id: "maggi15", name: "Maggi", price: 15, img: "images/maggi.png", quantity: 20 },
   { id: "maggi20", name: "Maggi Double Masala", price: 20, img: "images/maggi_double.png", quantity: 15 },
@@ -94,7 +94,7 @@ const defaultProducts = [
   { id: "kurkure", name: "Kurkure", price: 20, img: "images/kurkure.png", quantity: 15 }
 ];
 
-  ];
+  
 
   let productsMap = {};
   let cart = JSON.parse(localStorage.getItem("cart_v2")) || [];
@@ -238,4 +238,5 @@ const defaultProducts = [
 
 </body>
 </html>
+
 
