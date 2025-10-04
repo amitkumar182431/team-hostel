@@ -264,6 +264,33 @@
     box-shadow: none;
   }
   
+  .quantity-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+  }
+  
+  .quantity-controls button {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    border-radius: 8px;
+  }
+  
+  .quantity-controls .qty-display {
+    font-weight: 700;
+    font-size: 16px;
+    min-width: 30px;
+    text-align: center;
+    color: var(--dark);
+  }
+  
   #cartBox {
     background: var(--white);
     padding: 28px;
@@ -412,12 +439,19 @@
     padding: 12px;
     border-radius: 8px;
     font-weight: 500;
+    display: none;
   }
   
   #msg.success {
     background: #d4edda;
     color: var(--success);
     border: 1px solid #c3e6cb;
+  }
+  
+  #msg.error {
+    background: #f8d7da;
+    color: var(--danger);
+    border: 1px solid #f5c6cb;
   }
   
   .empty-cart {
@@ -447,16 +481,90 @@
       grid-template-columns: 1fr;
     }
     
+    header {
+      padding: 12px 16px;
+      flex-direction: column;
+      gap: 12px;
+      text-align: center;
+    }
+    
     header h1 {
       font-size: 18px;
     }
     
     nav {
-      gap: 16px;
+      gap: 20px;
+      width: 100%;
+      justify-content: center;
     }
     
     .container {
       padding: 0 16px;
+      margin: 20px auto;
+    }
+    
+    h2 {
+      font-size: 22px;
+    }
+    
+    table {
+      font-size: 13px;
+    }
+    
+    th, td {
+      padding: 10px 6px;
+    }
+    
+    input[type=number] {
+      width: 60px;
+      padding: 6px;
+    }
+    
+    .place-order-btn {
+      font-size: 15px;
+      padding: 14px 20px;
+    }
+    
+    #cartBox {
+      padding: 20px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .grid {
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 12px;
+    }
+    
+    .card {
+      padding: 16px;
+    }
+    
+    .card img {
+      height: 120px;
+    }
+    
+    .card h3 {
+      font-size: 15px;
+    }
+    
+    .price {
+      font-size: 18px;
+    }
+    
+    table {
+      display: block;
+      overflow-x: auto;
+    }
+    
+    .quantity-controls button {
+      width: 36px;
+      height: 36px;
+      font-size: 16px;
+    }
+    
+    .quantity-controls .qty-display {
+      font-size: 14px;
     }
   }
 </style>
@@ -585,6 +693,26 @@
       const stockClass = p.quantity > 5 ? 'stock-high' : 'stock-low';
       const stockIcon = p.quantity > 5 ? 'fa-check-circle' : 'fa-exclamation-triangle';
       
+      const inCart = cart.find(x => x.id === id);
+      const cartQty = inCart ? inCart.qty : 0;
+      
+      let buttonHtml = '';
+      if (outOf) {
+        buttonHtml = `<button disabled><i class="fas fa-ban"></i> Out of stock</button>`;
+      } else if (cartQty > 0) {
+        buttonHtml = `
+          <div class="quantity-controls">
+            <button onclick="decrementCart('${id}')"><i class="fas fa-minus"></i></button>
+            <span class="qty-display">${cartQty}</span>
+            <button onclick="incrementCart('${id}')" ${p.quantity <= cartQty ? 'disabled' : ''}>
+              <i class="fas fa-plus"></i>
+            </button>
+          </div>
+        `;
+      } else {
+        buttonHtml = `<button onclick="addToCart('${id}')"><i class="fas fa-cart-plus"></i> Add to cart</button>`;
+      }
+      
       container.innerHTML += `
         <div class="card">
           <img src="${p.img}" alt="${p.name}">
@@ -596,9 +724,7 @@
               ${outOf ? 'Out of stock' : `${p.quantity} left`}
             </span>
           </div>
-          <button ${outOf ? "disabled" : ""} onclick="addToCart('${id}')">
-            <i class="fas fa-cart-plus"></i> ${outOf ? "Out of stock" : "Add to cart"}
-          </button>
+          ${buttonHtml}
         </div>
       `;
     });
@@ -660,7 +786,35 @@
       cart.push({ id, qty: 1 });
     }
     updateCartUI();
+    renderProducts();
     showMessage(`${prod.name} added to cart!`, true);
+  }
+
+  window.incrementCart = function(id){
+    const prod = productsMap[id];
+    const existing = cart.find(x=>x.id===id);
+    if (!existing) return;
+    
+    if (prod.quantity < existing.qty + 1) { 
+      showMessage("Not enough stock available", false);
+      return; 
+    }
+    existing.qty++;
+    updateCartUI();
+    renderProducts();
+  }
+
+  window.decrementCart = function(id){
+    const existing = cart.find(x=>x.id===id);
+    if (!existing) return;
+    
+    if (existing.qty <= 1) {
+      cart = cart.filter(x => x.id !== id);
+    } else {
+      existing.qty--;
+    }
+    updateCartUI();
+    renderProducts();
   }
 
   window.changeQty = function(index, qty){
@@ -675,17 +829,19 @@
     }
     cart[index].qty = qty;
     updateCartUI();
+    renderProducts();
   }
 
   window.removeFromCart = function(index){
     cart.splice(index,1);
     updateCartUI();
+    renderProducts();
   }
 
   function showMessage(text, isSuccess) {
     const msg = document.getElementById("msg");
     msg.textContent = text;
-    msg.className = isSuccess ? 'success' : '';
+    msg.className = isSuccess ? 'success' : 'error';
     msg.style.display = 'block';
     setTimeout(() => { msg.style.display = 'none'; }, 4000);
   }
@@ -752,6 +908,7 @@
       
       cart = [];
       updateCartUI();
+      renderProducts();
       showMessage("Order placed successfully! We'll deliver to your room shortly.", true);
 
     } catch (err) { 
@@ -768,7 +925,7 @@
       const data = snap.val() || {};
       productsMap = {};
       Object.keys(data).forEach(key => { 
-        productsMap[key] = { ...data[key], id:key }; 
+        productsMap[key] = { ...data[key], id:key };
       });
       renderProducts();
       updateCartUI();
