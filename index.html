@@ -139,6 +139,11 @@ button:hover {
   background: var(--accent-dark);
 }
 
+button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
 .quantity-controls {
   display: flex;
   justify-content: center;
@@ -162,12 +167,20 @@ button:hover {
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 10px;
+  overflow-x: auto;
 }
 
 #cartTable th, #cartTable td {
   padding: 10px;
   text-align: center;
   border-bottom: 1px solid #ddd;
+}
+
+#cartTable input[type="number"] {
+  width: 60px;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
 }
 
 .remove-btn {
@@ -237,6 +250,222 @@ button:hover {
   background: #f8d7da;
   color: var(--danger);
 }
+
+/* Modal Styles */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 0.3s ease;
+}
+
+.modal-overlay.show {
+  display: flex;
+}
+
+.modal {
+  background: var(--white);
+  border-radius: 16px;
+  padding: 30px;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.3s ease;
+  text-align: center;
+}
+
+.modal-icon {
+  font-size: 4em;
+  color: var(--success);
+  margin-bottom: 15px;
+}
+
+.modal h3 {
+  font-size: 1.8em;
+  color: var(--primary);
+  margin-bottom: 10px;
+}
+
+.modal p {
+  color: var(--gray);
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+.order-details {
+  background: var(--light);
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.order-details h4 {
+  color: var(--primary);
+  margin-bottom: 10px;
+  font-size: 1.1em;
+}
+
+.order-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.order-item:last-child {
+  border-bottom: none;
+}
+
+.order-total {
+  font-weight: 700;
+  font-size: 1.2em;
+  color: var(--primary);
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 2px solid var(--primary);
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.modal-actions button {
+  flex: 1;
+  padding: 12px;
+  font-size: 1em;
+}
+
+.btn-primary {
+  background: var(--primary);
+}
+
+.btn-primary:hover {
+  background: var(--secondary);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { 
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to { 
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  header h1 {
+    font-size: 1.3em;
+  }
+  
+  header nav a {
+    margin-left: 10px;
+    font-size: 0.9em;
+  }
+  
+  .grid {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+  }
+  
+  .card {
+    padding: 12px;
+  }
+  
+  .card img {
+    height: 120px;
+  }
+  
+  .card h3 {
+    font-size: 0.9em;
+  }
+  
+  #cartTable {
+    font-size: 0.85em;
+  }
+  
+  #cartTable th, #cartTable td {
+    padding: 8px 5px;
+  }
+  
+  .customer-info input {
+    flex: 1 1 100%;
+  }
+  
+  .modal {
+    padding: 20px;
+  }
+  
+  .modal h3 {
+    font-size: 1.5em;
+  }
+  
+  .modal-icon {
+    font-size: 3em;
+  }
+}
+
+@media (max-width: 480px) {
+  header {
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px;
+  }
+  
+  header nav {
+    display: flex;
+    gap: 15px;
+  }
+  
+  header nav a {
+    margin-left: 0;
+  }
+  
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  
+  .card img {
+    height: 100px;
+  }
+  
+  #cartTable {
+    display: block;
+    overflow-x: auto;
+  }
+  
+  .order-summary {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .modal-actions {
+    flex-direction: column;
+  }
+}
+
+/* Table responsive wrapper */
+.table-wrapper {
+  overflow-x: auto;
+  margin-bottom: 15px;
+}
 </style>
 </head>
 <body>
@@ -261,18 +490,20 @@ button:hover {
     </div>
     
     <div id="cartContent">
-      <table id="cartTable">
-        <thead>
-          <tr>
-            <th>Product</th>
-            <th>Price</th>
-            <th>Quantity</th>
-            <th>Subtotal</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
+      <div class="table-wrapper">
+        <table id="cartTable">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Price</th>
+              <th>Quantity</th>
+              <th>Subtotal</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
       
       <div class="empty-cart" id="emptyCart" style="display: none;">
         <i class="fas fa-shopping-cart"></i>
@@ -306,11 +537,31 @@ button:hover {
   </section>
 </div>
 
+<!-- Order Confirmation Modal -->
+<div id="orderModal" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-icon">
+      <i class="fas fa-check-circle"></i>
+    </div>
+    <h3>Order Placed Successfully!</h3>
+    <p>Your order has been confirmed and will be delivered to Room 320.</p>
+    
+    <div class="order-details" id="orderDetailsContent">
+      <!-- Order details will be inserted here -->
+    </div>
+    
+    <div class="modal-actions">
+      <button class="btn-primary" onclick="closeModal()">
+        <i class="fas fa-check"></i> Done
+      </button>
+    </div>
+  </div>
+</div>
+
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
   import { getDatabase, ref, get, set, push, update, onValue } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-database.js";
 
-  // ✅ Your Firebase config (same as your given one)
   const firebaseConfig = {
     apiKey: "AIzaSyDNydfUK5s01jN7eru8Ztdd5OnMbzfQz-Q",
     authDomain: "hostel-store-5ec6d.firebaseapp.com",
@@ -330,29 +581,28 @@ button:hover {
     if (e.key === "F12" || (e.ctrlKey && e.shiftKey && ["I","C","J"].includes(e.key))) e.preventDefault();
   });
 
-  // ✅ Product list (same as before)
   const defaultProducts = [
-         { id: "maggi_double", name: "Maggi Double Masala", price: 20, img: "images/maggi_double.png", quantity: 3 },
-      { id: "maggi", name: "Maggi", price: 15, img: "images/maggi.png", quantity: 14 },
-      { id: "tede_mede", name: "Tede Mede", price: 21, img: "images/tedemede.png", quantity: 24 },
-      { id: "kurkure", name: "Kurkure", price: 21, img: "images/kurkure.png", quantity: 10 },
-      { id: "chips", name: "Chips", price: 50, img: "images/chips.png", quantity: 1 },
-      { id: "lays_red", name: "Lays Red", price: 25, img: "images/lays_red.png", quantity: 6 },
-      { id: "lays_green", name: "Lays Green", price: 25, img: "images/lays_green.png", quantity: 5 },
-      { id: "lays_nimbu", name: "Lays Nimbu", price: 23, img: "images/lays_nimbu.png", quantity: 3 },
-      { id: "real_juice", name: "Real Juice", price: 12, img: "images/real_juice.png", quantity: 10 },
-      { id: "appy_drink", name: "Appy Drink", price: 12, img: "images/appy.png", quantity: 8 },
-      { id: "dark_cookies", name: "Dark Cookies", price: 40, img: "images/dark_cookies.png", quantity: 10 },
-      { id: "dark_fantasy_bourbon", name: "Dark Fantasy Bourbon Biscuit", price: 35, img: "images/dark_fantasy.png", quantity: 6 },
-      { id: "oreo", name: "Oreo", price: 11, img: "images/oreo.png", quantity: 6 },
-      { id: "hide_seek", name: "Hide & Seek", price: 30, img: "images/hide_seek.png", quantity: 4 },
-      { id: "jim_jam", name: "Jim Jam", price: 27, img: "images/jim_jam.png", quantity: 5 },
-      { id: "chupachups", name: "Chupa Chups", price: 35, img: "images/chupachups.png", quantity: 1 },
-      { id: "britania_cake", name: "Britania Cake", price: 30, img: "images/britania_cake.png", quantity: 1 },
-      { id: "sunfeast_choco_cake", name: "Sunfeast Choco Cake", price: 12, img: "images/sunfeast_choco_cake.png", quantity: 3 },
-      { id: "sunfeast_swiss_roll", name: "Sunfeast Swiss Roll", price: 12, img: "images/sunfeast_swiss_roll.png", quantity: 4 },
-      { id: "choco_creme_roll", name: "Choco Creme Roll Cake", price: 27, img: "images/choco_creme_roll.png", quantity: 2 }
-   ];
+    { id: "maggi_double", name: "Maggi Double Masala", price: 20, img: "images/maggi_double.png", quantity: 3 },
+    { id: "maggi", name: "Maggi", price: 15, img: "images/maggi.png", quantity: 14 },
+    { id: "tede_mede", name: "Tede Mede", price: 21, img: "images/tedemede.png", quantity: 24 },
+    { id: "kurkure", name: "Kurkure", price: 21, img: "images/kurkure.png", quantity: 10 },
+    { id: "chips", name: "Chips", price: 50, img: "images/chips.png", quantity: 1 },
+    { id: "lays_red", name: "Lays Red", price: 25, img: "images/lays_red.png", quantity: 6 },
+    { id: "lays_green", name: "Lays Green", price: 25, img: "images/lays_green.png", quantity: 5 },
+    { id: "lays_nimbu", name: "Lays Nimbu", price: 23, img: "images/lays_nimbu.png", quantity: 3 },
+    { id: "real_juice", name: "Real Juice", price: 12, img: "images/real_juice.png", quantity: 10 },
+    { id: "appy_drink", name: "Appy Drink", price: 12, img: "images/appy.png", quantity: 8 },
+    { id: "dark_cookies", name: "Dark Cookies", price: 40, img: "images/dark_cookies.png", quantity: 10 },
+    { id: "dark_fantasy_bourbon", name: "Dark Fantasy Bourbon Biscuit", price: 35, img: "images/dark_fantasy.png", quantity: 6 },
+    { id: "oreo", name: "Oreo", price: 11, img: "images/oreo.png", quantity: 6 },
+    { id: "hide_seek", name: "Hide & Seek", price: 30, img: "images/hide_seek.png", quantity: 4 },
+    { id: "jim_jam", name: "Jim Jam", price: 27, img: "images/jim_jam.png", quantity: 5 },
+    { id: "chupachups", name: "Chupa Chups", price: 35, img: "images/chupachups.png", quantity: 1 },
+    { id: "britania_cake", name: "Britania Cake", price: 30, img: "images/britania_cake.png", quantity: 1 },
+    { id: "sunfeast_choco_cake", name: "Sunfeast Choco Cake", price: 12, img: "images/sunfeast_choco_cake.png", quantity: 3 },
+    { id: "sunfeast_swiss_roll", name: "Sunfeast Swiss Roll", price: 12, img: "images/sunfeast_swiss_roll.png", quantity: 4 },
+    { id: "choco_creme_roll", name: "Choco Creme Roll Cake", price: 27, img: "images/choco_creme_roll.png", quantity: 2 }
+  ];
 
   let productsMap = {};
   let cart = JSON.parse(localStorage.getItem("cart_v2")) || [];
@@ -515,6 +765,40 @@ button:hover {
     setTimeout(() => msg.style.display = 'none', 4000);
   }
 
+  function showOrderModal(orderData) {
+    const modal = document.getElementById("orderModal");
+    const detailsContent = document.getElementById("orderDetailsContent");
+    
+    let itemsHtml = `
+      <div style="background: #fff3cd; padding: 12px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #ffc107;">
+        <h4 style="color: #856404; margin-bottom: 8px;"><i class="fas fa-door-open"></i> Take Order From:</h4>
+        <p style="font-size: 1.3em; font-weight: 700; color: #333; margin: 0;">Room ${orderData.roomNo}</p>
+        <p style="font-size: 0.9em; color: #666; margin-top: 5px;"><i class="fas fa-user"></i> ${orderData.name}</p>
+        <p style="font-size: 0.9em; color: #666;"><i class="fas fa-phone"></i> ${orderData.mobileNo}</p>
+      </div>
+      <h4>Order Items:</h4>
+    `;
+    
+    orderData.items.forEach(item => {
+      itemsHtml += `
+        <div class="order-item">
+          <span>${item.name} × ${item.qty}</span>
+          <span>₹${item.price * item.qty}</span>
+        </div>
+      `;
+    });
+    
+    itemsHtml += `<div class="order-total">Total Amount: ₹${orderData.total}</div>`;
+    
+    detailsContent.innerHTML = itemsHtml;
+    modal.classList.add('show');
+  }
+
+  window.closeModal = function() {
+    const modal = document.getElementById("orderModal");
+    modal.classList.remove('show');
+  }
+
   async function placeOrder(){
     if (cart.length === 0) return showMessage("Your cart is empty", false);
     const name = document.getElementById("custName").value.trim();
@@ -547,13 +831,14 @@ button:hover {
       const newOrderRef = push(ref(db, "orders"));
       await Promise.all([ set(newOrderRef, order), update(ref(db, "/"), updates) ]);
 
+      showOrderModal(order);
+
       document.getElementById("custName").value = "";
       document.getElementById("roomNo").value = "320";
       document.getElementById("mobileNo").value = "";
       cart = [];
       updateCartUI();
       renderProducts();
-      showMessage("Order placed successfully! Delivery to Room 320.", true);
     } catch (err) {
       console.error(err);
       showMessage("Error placing order: " + err.message, false);
@@ -575,7 +860,7 @@ button:hover {
   (async function init(){
     await seedItemsIfEmpty();
     startItemsListener();
-    document.getElementById("roomNo").value = "320"; // ✅ Prefill room number
+    document.getElementById("roomNo").value = "320";
   })();
 </script>
 
