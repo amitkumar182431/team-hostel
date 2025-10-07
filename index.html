@@ -582,7 +582,7 @@ button:disabled {
   });
 
   const defaultProducts = [
-   { id: "maggi_double", name: "Maggi Double Masala", price: 20, img: "images/maggi_double.png", quantity: 3 },
+    { id: "maggi_double", name: "Maggi Double Masala", price: 20, img: "images/maggi_double.png", quantity: 3 },
     { id: "maggi", name: "Maggi", price: 15, img: "images/maggi.png", quantity: 14 },
     { id: "tede_mede", name: "Tede Mede", price: 21, img: "images/tedemede.png", quantity: 24 },
     { id: "kurkure", name: "Kurkure", price: 21, img: "images/kurkure.png", quantity: 10 },
@@ -600,18 +600,20 @@ button:disabled {
     { id: "chupachups", name: "Chupa Chups", price: 35, img: "images/chupachups.png", quantity: 1 },
     { id: "britania_cake", name: "Britania Cake", price: 30, img: "images/britania_cake.png", quantity: 1 },
     { id: "sunfeast_choco_cake", name: "Sunfeast Choco Cake", price: 12, img: "images/sunfeast_choco_cake.png", quantity: 3 },
-    { id: "britania_cake", name: "Britania Cake", price: 30, img: "images/britania_cake.png", quantity: 1 },
-    { id: "sunfeast_choco_cake", name: "Sunfeast Choco Cake", price: 12, img: "images/sunfeast_choco_cake.png", quantity: 3 },
-    { id: "jimjammini", name: "jim jam mini", price: 11, img: "images/britania_cake.png", quantity: 7},
-    { id: "crax", name: "crax", price: 60, img: "images/sunfeast_choco_cake.png", quantity: 2 },
-    { id: "hide&seek_strawberry", name: "hide&seek strawberry", price: 40, img: "images/britania_cake.png", quantity: 2 },
-      
+    { id: "jimjammini", name: "Jim Jam Mini", price: 11, img: "images/britania_cake.png", quantity: 7},
+    { id: "crax", name: "Crax", price: 60, img: "images/sunfeast_choco_cake.png", quantity: 2 },
+    { id: "hide_seek_strawberry", name: "Hide & Seek Strawberry", price: 40, img: "images/britania_cake.png", quantity: 2 },
     { id: "sunfeast_swiss_roll", name: "Sunfeast Swiss Roll", price: 12, img: "images/sunfeast_swiss_roll.png", quantity: 4 },
     { id: "choco_creme_roll", name: "Choco Creme Roll Cake", price: 27, img: "images/choco_creme_roll.png", quantity: 2 }
   ];
 
   let productsMap = {};
-  let cart = JSON.parse(localStorage.getItem("cart_v2")) || [];
+  let cart = [];
+
+  // Initialize cart from memory
+  function initCart() {
+    cart = [];
+  }
 
   async function seedItemsIfEmpty(){
     const itemsRef = ref(db, "items");
@@ -704,8 +706,6 @@ button:disabled {
       document.getElementById("subtotal").textContent = subtotal;
       document.getElementById("total").textContent = subtotal;
     }
-    
-    localStorage.setItem("cart_v2", JSON.stringify(cart));
   }
 
   window.addToCart = function(id){
@@ -816,35 +816,57 @@ button:disabled {
       const snap = await get(ref(db, "items"));
       if (!snap.exists()) return showMessage("Items unavailable", false);
       const items = snap.val();
+      
+      // Check stock availability for all items
       for (const c of cart) {
         const stored = items[c.id];
-        if (!stored || stored.quantity < c.qty)
-          return showMessage(`Not enough ${stored.name}.`, false);
+        if (!stored) {
+          return showMessage(`Item not found in inventory.`, false);
+        }
+        if (stored.quantity < c.qty) {
+          return showMessage(`Not enough ${stored.name} available. Only ${stored.quantity} left.`, false);
+        }
       }
 
+      // Update stock quantities
       const updates = {};
       cart.forEach(c => updates[`items/${c.id}/quantity`] = items[c.id].quantity - c.qty);
+      
+      // Create order object
       const order = {
         name,
         roomNo: room || "320",
         mobileNo: mobile,
-        items: cart.map(c => ({ id: c.id, name: items[c.id].name, qty: c.qty, price: items[c.id].price })),
+        items: cart.map(c => ({ 
+          id: c.id, 
+          name: items[c.id].name, 
+          qty: c.qty, 
+          price: items[c.id].price 
+        })),
         total: document.getElementById("total").textContent,
         timestamp: new Date().toISOString(),
-        note: "Deliver to Room 320"
+        note: `Deliver to Room ${room || "320"}`
       };
 
+      // Save order and update stock
       const newOrderRef = push(ref(db, "orders"));
-      await Promise.all([ set(newOrderRef, order), update(ref(db, "/"), updates) ]);
+      await Promise.all([ 
+        set(newOrderRef, order), 
+        update(ref(db, "/"), updates) 
+      ]);
 
+      // Show success modal
       showOrderModal(order);
 
+      // Clear form and cart
       document.getElementById("custName").value = "";
       document.getElementById("roomNo").value = "320";
       document.getElementById("mobileNo").value = "";
       cart = [];
       updateCartUI();
       renderProducts();
+      
+      showMessage("Order placed successfully!", true);
     } catch (err) {
       console.error(err);
       showMessage("Error placing order: " + err.message, false);
@@ -864,6 +886,7 @@ button:disabled {
   }
 
   (async function init(){
+    initCart();
     await seedItemsIfEmpty();
     startItemsListener();
     document.getElementById("roomNo").value = "320";
@@ -872,4 +895,3 @@ button:disabled {
 
 </body>
 </html>
-
