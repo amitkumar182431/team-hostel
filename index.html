@@ -2,24 +2,28 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<title>Hostel Store — User</title>
+<title>MUIT Hostel Store</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
 :root {
   --primary: #6a11cb;
+  --primary-dark: #5209b3;
   --secondary: #2575fc;
   --accent: #ff512f;
   --accent-dark: #dd2476;
-  --success: #2d7a36;
-  --danger: #dc3545;
-  --light: #f5f6fa;
-  --dark: #222;
-  --white: #fff;
-  --gray: #666;
-  --shadow: 0 8px 20px rgba(0,0,0,0.08);
-  --shadow-hover: 0 12px 30px rgba(0,0,0,0.15);
+  --success: #10b981;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+  --light: #f8fafc;
+  --white: #ffffff;
+  --dark: #1e293b;
+  --gray: #64748b;
+  --gray-light: #e2e8f0;
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
+  --shadow: 0 8px 24px rgba(0,0,0,0.12);
+  --shadow-lg: 0 20px 60px rgba(0,0,0,0.2);
 }
 
 * {
@@ -30,228 +34,499 @@
 }
 
 body {
-  background: var(--light);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
   color: var(--dark);
 }
 
+/* Header Styles */
 header {
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(10px);
+  box-shadow: var(--shadow);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 3px solid var(--primary);
+}
+
+.header-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px 30px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 20px;
-  background: var(--primary);
-  color: var(--white);
 }
 
-header h1 {
+.logo-section {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.logo-icon {
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 24px;
+  box-shadow: var(--shadow-sm);
+}
+
+.logo-text h1 {
   font-size: 1.8em;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 800;
+  letter-spacing: -0.5px;
 }
 
-header nav a {
-  color: var(--white);
+.logo-text p {
+  font-size: 0.75em;
+  color: var(--gray);
+  margin-top: -2px;
+}
+
+.nav-links {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.nav-btn {
+  padding: 12px 24px;
+  border-radius: 12px;
   text-decoration: none;
-  margin-left: 20px;
-  font-weight: 500;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 2px solid transparent;
 }
 
-.container {
-  max-width: 1200px;
-  margin: 20px auto;
-  padding: 0 15px;
+.nav-btn.primary {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: white;
 }
 
-h2 {
-  margin-bottom: 15px;
+.nav-btn.primary:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+
+.nav-btn.secondary {
   color: var(--primary);
+  border-color: var(--primary);
 }
 
+.nav-btn.secondary:hover {
+  background: var(--primary);
+  color: white;
+}
+
+.cart-badge {
+  background: var(--accent);
+  color: white;
+  border-radius: 50%;
+  padding: 2px 8px;
+  font-size: 0.75em;
+  font-weight: 700;
+  min-width: 20px;
+  text-align: center;
+}
+
+/* Container */
+.container {
+  max-width: 1400px;
+  margin: 30px auto;
+  padding: 0 30px;
+}
+
+/* Section Headers */
+.section-header {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  padding: 25px 30px;
+  border-radius: 20px;
+  margin-bottom: 25px;
+  box-shadow: var(--shadow);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.section-header h2 {
+  font-size: 2em;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.section-header i {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Product Grid */
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 25px;
+  margin-bottom: 40px;
 }
 
 .card {
-  background: var(--white);
-  border-radius: 12px;
-  padding: 15px;
+  background: white;
+  border-radius: 20px;
+  padding: 20px;
   text-align: center;
-  box-shadow: var(--shadow);
-  transition: 0.3s;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.card:hover::before {
+  transform: scaleX(1);
 }
 
 .card:hover {
-  box-shadow: var(--shadow-hover);
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-lg);
+}
+
+.card-img-wrapper {
+  background: var(--light);
+  border-radius: 16px;
+  padding: 15px;
+  margin-bottom: 15px;
+  height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .card img {
   width: 100%;
-  height: 140px;
+  height: 100%;
   object-fit: contain;
-  margin-bottom: 10px;
+  transition: transform 0.3s ease;
+}
+
+.card:hover img {
+  transform: scale(1.05);
 }
 
 .card h3 {
-  font-size: 1em;
-  margin-bottom: 5px;
+  font-size: 1.1em;
+  margin-bottom: 10px;
+  color: var(--dark);
+  font-weight: 600;
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .price {
-  font-weight: 600;
-  margin-bottom: 5px;
+  font-size: 1.5em;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 12px;
 }
 
 .stock-info {
-  margin-bottom: 10px;
+  margin-bottom: 15px;
 }
 
 .stock-badge {
-  padding: 3px 6px;
-  border-radius: 8px;
-  font-size: 0.8em;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85em;
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
+  font-weight: 600;
 }
 
 .stock-high {
-  background: #d4edda;
+  background: #d1fae5;
   color: var(--success);
 }
 
 .stock-low {
-  background: #fff3cd;
-  color: #856404;
+  background: #fef3c7;
+  color: var(--warning);
 }
 
+.stock-out {
+  background: #fee2e2;
+  color: var(--danger);
+}
+
+/* Buttons */
 button {
-  background: var(--accent);
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
   border: none;
-  color: var(--white);
-  padding: 8px 12px;
-  border-radius: 8px;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 12px;
   cursor: pointer;
-  font-weight: 500;
-  transition: 0.2s;
+  font-weight: 600;
+  font-size: 0.95em;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
 }
 
-button:hover {
-  background: var(--accent-dark);
+button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+
+button:active:not(:disabled) {
+  transform: translateY(0);
 }
 
 button:disabled {
-  background: #ccc;
+  background: var(--gray-light);
+  color: var(--gray);
   cursor: not-allowed;
+  transform: none;
 }
 
 .quantity-controls {
   display: flex;
-  justify-content: center;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
+  background: var(--light);
+  border-radius: 12px;
+  padding: 8px;
 }
 
 .quantity-controls button {
-  padding: 5px 10px;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 10px;
 }
 
 .qty-display {
-  font-weight: 600;
+  font-weight: 700;
+  font-size: 1.2em;
+  color: var(--primary);
+  min-width: 30px;
+  text-align: center;
 }
 
-.cart-header {
-  margin-bottom: 10px;
+/* Cart Section */
+.cart-container {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: var(--shadow);
+  margin-bottom: 40px;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  margin-bottom: 25px;
+  border-radius: 16px;
 }
 
 #cartTable {
   width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 10px;
-  overflow-x: auto;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
 }
 
-#cartTable th, #cartTable td {
-  padding: 10px;
-  text-align: center;
-  border-bottom: 1px solid #ddd;
+#cartTable thead {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: white;
+}
+
+#cartTable th {
+  padding: 16px;
+  text-align: left;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.85em;
+  letter-spacing: 0.5px;
+}
+
+#cartTable td {
+  padding: 20px 16px;
+  text-align: left;
+  border-bottom: 1px solid var(--gray-light);
+}
+
+#cartTable tbody tr:last-child td {
+  border-bottom: none;
+}
+
+#cartTable tbody tr:hover {
+  background: var(--light);
 }
 
 #cartTable input[type="number"] {
-  width: 60px;
-  padding: 5px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+  width: 80px;
+  padding: 10px;
+  border: 2px solid var(--gray-light);
+  border-radius: 10px;
+  font-weight: 600;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+#cartTable input[type="number"]:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(106, 17, 203, 0.1);
 }
 
 .remove-btn {
-  background: var(--danger);
-}
-
-.remove-btn:hover {
-  background: #a71d2a;
+  background: linear-gradient(135deg, var(--danger), #dc2626);
+  width: auto;
+  padding: 10px 16px;
 }
 
 .empty-cart {
   text-align: center;
-  padding: 20px;
+  padding: 60px 20px;
   color: var(--gray);
 }
 
-.order-summary {
-  display: flex;
-  justify-content: space-between;
+.empty-cart i {
+  font-size: 4em;
+  color: var(--gray-light);
   margin-bottom: 15px;
 }
 
-.summary-row {
+.empty-cart p {
+  font-size: 1.2em;
   font-weight: 500;
 }
 
+/* Order Summary */
+.order-summary {
+  background: var(--light);
+  padding: 25px;
+  border-radius: 16px;
+  margin-bottom: 25px;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+  font-size: 1.1em;
+  font-weight: 500;
+  color: var(--dark);
+}
+
 .summary-row.total {
-  font-size: 1.2em;
+  border-top: 3px solid var(--primary);
+  margin-top: 12px;
+  padding-top: 20px;
+  font-size: 1.5em;
+  font-weight: 700;
   color: var(--primary);
 }
 
+/* Customer Info */
 .customer-info {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 15px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-bottom: 25px;
 }
 
 .customer-info input {
-  flex: 1 1 150px;
-  padding: 8px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
+  padding: 16px;
+  border-radius: 12px;
+  border: 2px solid var(--gray-light);
+  font-size: 1em;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.customer-info input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(106, 17, 203, 0.1);
 }
 
 .place-order-btn {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
+  background: linear-gradient(135deg, var(--success), #059669);
+  font-size: 1.1em;
+  padding: 18px 32px;
 }
 
+/* Message */
 #msg {
-  margin-top: 10px;
-  padding: 10px;
-  border-radius: 8px;
+  margin-top: 20px;
+  padding: 16px 20px;
+  border-radius: 12px;
   display: none;
+  font-weight: 600;
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 .success {
-  background: #d4edda;
+  background: #d1fae5;
   color: var(--success);
+  border-left: 4px solid var(--success);
 }
 
 .error {
-  background: #f8d7da;
+  background: #fee2e2;
   color: var(--danger);
+  border-left: 4px solid var(--danger);
 }
 
-/* Modal Styles */
+/* Modal */
 .modal-overlay {
   display: none;
   position: fixed;
@@ -259,7 +534,7 @@ button:disabled {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.7);
   z-index: 1000;
   justify-content: center;
   align-items: center;
@@ -271,53 +546,109 @@ button:disabled {
 }
 
 .modal {
-  background: var(--white);
-  border-radius: 16px;
-  padding: 30px;
-  max-width: 500px;
+  background: white;
+  border-radius: 24px;
+  padding: 40px;
+  max-width: 550px;
   width: 90%;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  animation: slideUp 0.3s ease;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-lg);
+  animation: slideUp 0.4s ease;
   text-align: center;
 }
 
 .modal-icon {
-  font-size: 4em;
-  color: var(--success);
-  margin-bottom: 15px;
+  width: 100px;
+  height: 100px;
+  background: linear-gradient(135deg, var(--success), #059669);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  animation: scaleIn 0.5s ease;
+}
+
+.modal-icon i {
+  font-size: 3em;
+  color: white;
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
 }
 
 .modal h3 {
-  font-size: 1.8em;
-  color: var(--primary);
+  font-size: 2em;
+  color: var(--dark);
   margin-bottom: 10px;
+  font-weight: 700;
 }
 
-.modal p {
+.modal > p {
   color: var(--gray);
-  margin-bottom: 20px;
+  margin-bottom: 25px;
   line-height: 1.6;
+  font-size: 1.05em;
 }
 
 .order-details {
   background: var(--light);
-  padding: 15px;
-  border-radius: 10px;
-  margin-bottom: 20px;
+  padding: 25px;
+  border-radius: 16px;
+  margin-bottom: 25px;
   text-align: left;
+}
+
+.customer-card {
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  padding: 20px;
+  border-radius: 16px;
+  margin-bottom: 20px;
+  border-left: 5px solid var(--warning);
+}
+
+.customer-card h4 {
+  color: #92400e;
+  margin-bottom: 12px;
+  font-size: 1.2em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.customer-detail {
+  font-size: 0.95em;
+  color: #78350f;
+  margin: 8px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.customer-detail strong {
+  font-size: 1.3em;
 }
 
 .order-details h4 {
   color: var(--primary);
-  margin-bottom: 10px;
-  font-size: 1.1em;
+  margin-bottom: 15px;
+  font-size: 1.2em;
+  font-weight: 700;
 }
 
 .order-item {
   display: flex;
   justify-content: space-between;
-  padding: 8px 0;
-  border-bottom: 1px solid #ddd;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--gray-light);
+  font-size: 1.05em;
 }
 
 .order-item:last-child {
@@ -326,30 +657,18 @@ button:disabled {
 
 .order-total {
   font-weight: 700;
-  font-size: 1.2em;
+  font-size: 1.4em;
   color: var(--primary);
-  margin-top: 10px;
-  padding-top: 10px;
-  border-top: 2px solid var(--primary);
-}
-
-.modal-actions {
-  display: flex;
-  gap: 10px;
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 3px solid var(--primary);
 }
 
 .modal-actions button {
-  flex: 1;
-  padding: 12px;
-  font-size: 1em;
-}
-
-.btn-primary {
-  background: var(--primary);
-}
-
-.btn-primary:hover {
-  background: var(--secondary);
+  width: 100%;
+  padding: 18px;
+  font-size: 1.1em;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
 }
 
 @keyframes fadeIn {
@@ -370,169 +689,220 @@ button:disabled {
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  header h1 {
+  .header-content {
+    padding: 15px 20px;
+  }
+  
+  .logo-text h1 {
     font-size: 1.3em;
   }
   
-  header nav a {
-    margin-left: 10px;
+  .logo-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+  }
+  
+  .nav-btn {
+    padding: 10px 16px;
     font-size: 0.9em;
   }
   
-  .grid {
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 15px;
+  .container {
+    padding: 0 20px;
+    margin: 20px auto;
   }
   
-  .card {
-    padding: 12px;
-  }
-  
-  .card img {
-    height: 120px;
-  }
-  
-  .card h3 {
-    font-size: 0.9em;
-  }
-  
-  #cartTable {
-    font-size: 0.85em;
-  }
-  
-  #cartTable th, #cartTable td {
-    padding: 8px 5px;
-  }
-  
-  .customer-info input {
-    flex: 1 1 100%;
-  }
-  
-  .modal {
+  .section-header {
     padding: 20px;
   }
   
-  .modal h3 {
+  .section-header h2 {
     font-size: 1.5em;
   }
   
+  .grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 15px;
+  }
+  
+  .card-img-wrapper {
+    height: 130px;
+  }
+  
+  .cart-container {
+    padding: 20px;
+  }
+  
+  #cartTable {
+    font-size: 0.9em;
+  }
+  
+  #cartTable th, #cartTable td {
+    padding: 12px 8px;
+  }
+  
+  .customer-info {
+    grid-template-columns: 1fr;
+  }
+  
+  .modal {
+    padding: 30px 20px;
+  }
+  
+  .modal h3 {
+    font-size: 1.6em;
+  }
+  
   .modal-icon {
-    font-size: 3em;
+    width: 80px;
+    height: 80px;
+  }
+  
+  .modal-icon i {
+    font-size: 2.5em;
   }
 }
 
 @media (max-width: 480px) {
-  header {
+  .header-content {
     flex-direction: column;
-    gap: 10px;
-    padding: 12px;
-  }
-  
-  header nav {
-    display: flex;
     gap: 15px;
   }
   
-  header nav a {
-    margin-left: 0;
+  .nav-links {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .nav-btn {
+    flex: 1;
+    justify-content: center;
   }
   
   .grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
+    gap: 12px;
   }
   
-  .card img {
-    height: 100px;
+  .card {
+    padding: 15px;
   }
   
-  #cartTable {
-    display: block;
-    overflow-x: auto;
+  .card h3 {
+    font-size: 0.95em;
+    min-height: 40px;
   }
   
-  .order-summary {
-    flex-direction: column;
-    gap: 10px;
+  .summary-row {
+    font-size: 1em;
   }
   
-  .modal-actions {
-    flex-direction: column;
+  .summary-row.total {
+    font-size: 1.3em;
   }
 }
 
-/* Table responsive wrapper */
-.table-wrapper {
-  overflow-x: auto;
-  margin-bottom: 15px;
+/* Loading Animation */
+.loading {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255,255,255,.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 </style>
 </head>
 <body>
 
 <header>
-  <h1>Hostel Store</h1>
-  <nav>
-    <a href="#productsSection"><i class="fas fa-store"></i> Products</a>
-    <a href="#cartBox"><i class="fas fa-shopping-cart"></i> Cart</a>
-  </nav>
+  <div class="header-content">
+    <div class="logo-section">
+      <div class="logo-icon">
+        <i class="fas fa-store"></i>
+      </div>
+      <div class="logo-text">
+        <h1>MUIT Hostel Store</h1>
+        <p>Your Campus Shopping Hub</p>
+      </div>
+    </div>
+    <nav class="nav-links">
+      <a href="#productsSection" class="nav-btn secondary">
+        <i class="fas fa-boxes"></i> Products
+      </a>
+      <a href="#cartBox" class="nav-btn primary">
+        <i class="fas fa-shopping-cart"></i> Cart
+        <span class="cart-badge" id="cartCount">0</span>
+      </a>
+    </nav>
+  </div>
 </header>
 
 <div class="container">
   <section id="productsSection">
-    <h2>Our Products</h2>
+    <div class="section-header">
+      <h2><i class="fas fa-store"></i> Available Products</h2>
+    </div>
     <div id="products" class="grid"></div>
   </section>
 
   <section id="cartBox">
-    <div class="cart-header">
-      <h2>Your Cart</h2>
+    <div class="section-header">
+      <h2><i class="fas fa-shopping-cart"></i> Shopping Cart</h2>
     </div>
     
-    <div id="cartContent">
-      <div class="table-wrapper">
-        <table id="cartTable">
-          <thead>
-            <tr>
-              <th>Product</th>
-              <th>Price</th>
-              <th>Quantity</th>
-              <th>Subtotal</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
-      
-      <div class="empty-cart" id="emptyCart" style="display: none;">
-        <i class="fas fa-shopping-cart"></i>
-        <p>Your cart is empty</p>
-      </div>
-      
-      <div class="order-summary">
-        <div class="summary-row">
-          <span>Subtotal:</span>
-          <span>₹<span id="subtotal">0</span></span>
+    <div class="cart-container">
+      <div id="cartContent">
+        <div class="table-wrapper">
+          <table id="cartTable">
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Subtotal</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
         </div>
-        <div class="summary-row total">
-          <span>Total:</span>
-          <span>₹<span id="total">0</span></span>
+        
+        <div class="empty-cart" id="emptyCart">
+          <i class="fas fa-shopping-cart"></i>
+          <p>Your cart is empty</p>
         </div>
+        
+        <div class="order-summary">
+          <div class="summary-row">
+            <span>Subtotal:</span>
+            <span>₹<span id="subtotal">0</span></span>
+          </div>
+          <div class="summary-row total">
+            <span>Total Amount:</span>
+            <span>₹<span id="total">0</span></span>
+          </div>
+        </div>
+        
+        <div class="customer-info">
+          <input id="custName" placeholder="Enter your name *" required>
+          <input id="roomNo" placeholder="Room number *" value="320" required>
+          <input id="mobileNo" placeholder="Mobile number *" type="tel" required>
+        </div>
+        
+        <button class="place-order-btn" onclick="placeOrder()">
+          <i class="fas fa-check-circle"></i>
+          <span>Place Order</span>
+        </button>
+        
+        <div id="msg"></div>
       </div>
-      
-      <div class="customer-info">
-        <input id="custName" placeholder="Your name">
-        <input id="roomNo" placeholder="Room no." value="320">
-        <input id="mobileNo" placeholder="Mobile no.">
-      </div>
-      
-      <button class="place-order-btn" onclick="placeOrder()">
-        <i class="fas fa-check-circle"></i>
-        <span>Place Order</span>
-      </button>
-      
-      <div id="msg"></div>
     </div>
   </section>
 </div>
@@ -544,15 +914,13 @@ button:disabled {
       <i class="fas fa-check-circle"></i>
     </div>
     <h3>Order Placed Successfully!</h3>
-    <p>Your order has been confirmed and will be delivered to Room 320.</p>
+    <p>Your order has been confirmed and will be delivered soon.</p>
     
-    <div class="order-details" id="orderDetailsContent">
-      <!-- Order details will be inserted here -->
-    </div>
+    <div class="order-details" id="orderDetailsContent"></div>
     
     <div class="modal-actions">
-      <button class="btn-primary" onclick="closeModal()">
-        <i class="fas fa-check"></i> Done
+      <button onclick="closeModal()">
+        <i class="fas fa-check"></i> Awesome, Thanks!
       </button>
     </div>
   </div>
@@ -576,11 +944,6 @@ button:disabled {
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
 
-  document.addEventListener("contextmenu", e => e.preventDefault());
-  document.addEventListener("keydown", e => {
-    if (e.key === "F12" || (e.ctrlKey && e.shiftKey && ["I","C","J"].includes(e.key))) e.preventDefault();
-  });
-
   const defaultProducts = [
     { id: "maggi_double", name: "Maggi Double Masala", price: 20, img: "images/maggi_double.png", quantity: 3 },
     { id: "maggi", name: "Maggi", price: 15, img: "images/maggi.png", quantity: 14 },
@@ -593,28 +956,28 @@ button:disabled {
     { id: "real_juice", name: "Real Juice", price: 12, img: "images/real_juice.png", quantity: 10 },
     { id: "appy_drink", name: "Appy Drink", price: 12, img: "images/appy.png", quantity: 8 },
     { id: "dark_cookies", name: "Dark Cookies", price: 40, img: "images/dark_cookies.png", quantity: 10 },
-    { id: "dark_fantasy_bourbon", name: "Dark Fantasy Bourbon Biscuit", price: 35, img: "images/dark_fantasy.png", quantity: 6 },
+    { id: "dark_fantasy_bourbon", name: "Dark Fantasy Bourbon", price: 35, img: "images/dark_fantasy.png", quantity: 6 },
     { id: "oreo", name: "Oreo", price: 11, img: "images/oreo.png", quantity: 6 },
     { id: "hide_seek", name: "Hide & Seek", price: 30, img: "images/hide_seek.png", quantity: 4 },
     { id: "jim_jam", name: "Jim Jam", price: 27, img: "images/jim_jam.png", quantity: 5 },
     { id: "chupachups", name: "Chupa Chups", price: 35, img: "images/chupachups.png", quantity: 1 },
     { id: "britania_cake", name: "Britania Cake", price: 30, img: "images/britania_cake.png", quantity: 1 },
     { id: "sunfeast_choco_cake", name: "Sunfeast Choco Cake", price: 12, img: "images/sunfeast_choco_cake.png", quantity: 3 },
-    { id: "jimjammini", name: "Jim Jam Mini", price: 11, img: "images/britania_cake.png", quantity: 7},
+    { id: "jimjammini", name: "Jim Jam Mini", price: 11, img: "images/britania_cake.png", quantity: 7 },
     { id: "crax", name: "Crax", price: 60, img: "images/sunfeast_choco_cake.png", quantity: 2 },
     { id: "hide_seek_strawberry", name: "Hide & Seek Strawberry", price: 40, img: "images/britania_cake.png", quantity: 2 },
     { id: "sunfeast_swiss_roll", name: "Sunfeast Swiss Roll", price: 12, img: "images/sunfeast_swiss_roll.png", quantity: 4 },
     { id: "choco_creme_roll", name: "Choco Creme Roll Cake", price: 27, img: "images/choco_creme_roll.png", quantity: 2 },
-    { id: "cadbury_cake", name: "Cadbury Cake", price: 12, img: "images/choco_creme_roll.png", quantity: 5},
-    { id: "cadbury_cookies", name: "Cadbury cookies", price: 45, img: "images/choco_creme_roll.png", quantity: 1 },
+    { id: "cadbury_cake", name: "Cadbury Cake", price: 12, img: "images/choco_creme_roll.png", quantity: 5 },
+    { id: "cadbury_cookies", name: "Cadbury Cookies", price: 45, img: "images/choco_creme_roll.png", quantity: 1 }
   ];
 
   let productsMap = {};
   let cart = [];
 
-  // Initialize cart from memory
-  function initCart() {
-    cart = [];
+  function updateCartCount() {
+    const count = cart.reduce((sum, item) => sum + item.qty, 0);
+    document.getElementById("cartCount").textContent = count;
   }
 
   async function seedItemsIfEmpty(){
@@ -633,15 +996,15 @@ button:disabled {
     Object.keys(productsMap).forEach(id => {
       const p = productsMap[id];
       const outOf = p.quantity <= 0;
-      const stockClass = p.quantity > 5 ? 'stock-high' : 'stock-low';
-      const stockIcon = p.quantity > 5 ? 'fa-check-circle' : 'fa-exclamation-triangle';
+      const stockClass = outOf ? 'stock-out' : (p.quantity > 5 ? 'stock-high' : 'stock-low');
+      const stockIcon = outOf ? 'fa-times-circle' : (p.quantity > 5 ? 'fa-check-circle' : 'fa-exclamation-triangle');
       
       const inCart = cart.find(x => x.id === id);
       const cartQty = inCart ? inCart.qty : 0;
       
       let buttonHtml = '';
       if (outOf) {
-        buttonHtml = `<button disabled><i class="fas fa-ban"></i> Out of stock</button>`;
+        buttonHtml = `<button disabled><i class="fas fa-ban"></i> Out of Stock</button>`;
       } else if (cartQty > 0) {
         buttonHtml = `
           <div class="quantity-controls">
@@ -653,18 +1016,20 @@ button:disabled {
           </div>
         `;
       } else {
-        buttonHtml = `<button onclick="addToCart('${id}')"><i class="fas fa-cart-plus"></i> Add to cart</button>`;
+        buttonHtml = `<button onclick="addToCart('${id}')"><i class="fas fa-cart-plus"></i> Add to Cart</button>`;
       }
       
       container.innerHTML += `
         <div class="card">
-          <img src="${p.img}" alt="${p.name}">
+          <div class="card-img-wrapper">
+            <img src="${p.img}" alt="${p.name}">
+          </div>
           <h3>${p.name}</h3>
           <div class="price">₹${p.price}</div>
           <div class="stock-info">
             <span class="stock-badge ${stockClass}">
               <i class="fas ${stockIcon}"></i>
-              ${outOf ? 'Out of stock' : `${p.quantity} left`}
+              ${outOf ? 'Out of Stock' : `${p.quantity} left`}
             </span>
           </div>
           ${buttonHtml}
@@ -697,8 +1062,8 @@ button:disabled {
         tbody.innerHTML += `
           <tr>
             <td><strong>${item.name}</strong></td>
-            <td>₹${item.price}</td>
-            <td><input type="number" value="${c.qty}" min="1" onchange="changeQty(${idx},this.value)"></td>
+            <td><strong>₹${item.price}</strong></td>
+            <td><input type="number" value="${c.qty}" min="1" max="${item.quantity}" onchange="changeQty(${idx},this.value)"></td>
             <td><strong>₹${itemTotal}</strong></td>
             <td><button class="remove-btn" onclick="removeFromCart(${idx})"><i class="fas fa-trash"></i></button></td>
           </tr>
@@ -708,6 +1073,7 @@ button:disabled {
       document.getElementById("subtotal").textContent = subtotal;
       document.getElementById("total").textContent = subtotal;
     }
+    updateCartCount();
   }
 
   window.addToCart = function(id){
@@ -760,9 +1126,12 @@ button:disabled {
   }
 
   window.removeFromCart = function(index){
+    const item = cart[index];
+    const prod = productsMap[item.id];
     cart.splice(index,1);
     updateCartUI();
     renderProducts();
+    showMessage(`${prod.name} removed from cart`, true);
   }
 
   function showMessage(text, success) {
@@ -778,25 +1147,34 @@ button:disabled {
     const detailsContent = document.getElementById("orderDetailsContent");
     
     let itemsHtml = `
-      <div style="background: #fff3cd; padding: 12px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #ffc107;">
-        <h4 style="color: #856404; margin-bottom: 8px;"><i class="fas fa-door-open"></i> Take Order From:</h4>
-        <p style="font-size: 1.3em; font-weight: 700; color: #333; margin: 0;">Room ${orderData.roomNo}</p>
-        <p style="font-size: 0.9em; color: #666; margin-top: 5px;"><i class="fas fa-user"></i> ${orderData.name}</p>
-        <p style="font-size: 0.9em; color: #666;"><i class="fas fa-phone"></i> ${orderData.mobileNo}</p>
+      <div class="customer-card">
+        <h4><i class="fas fa-door-open"></i> Delivery Information</h4>
+        <div class="customer-detail">
+          <i class="fas fa-home"></i>
+          <div>
+            <strong>Room ${orderData.roomNo}</strong>
+          </div>
+        </div>
+        <div class="customer-detail">
+          <i class="fas fa-user"></i> ${orderData.name}
+        </div>
+        <div class="customer-detail">
+          <i class="fas fa-phone"></i> ${orderData.mobileNo}
+        </div>
       </div>
-      <h4>Order Items:</h4>
+      <h4><i class="fas fa-receipt"></i> Order Items:</h4>
     `;
     
     orderData.items.forEach(item => {
       itemsHtml += `
         <div class="order-item">
-          <span>${item.name} × ${item.qty}</span>
-          <span>₹${item.price * item.qty}</span>
+          <span><strong>${item.name}</strong> × ${item.qty}</span>
+          <span><strong>₹${item.price * item.qty}</strong></span>
         </div>
       `;
     });
     
-    itemsHtml += `<div class="order-total">Total Amount: ₹${orderData.total}</div>`;
+    itemsHtml += `<div class="order-total"><i class="fas fa-money-bill-wave"></i> Total: ₹${orderData.total}</div>`;
     
     detailsContent.innerHTML = itemsHtml;
     modal.classList.add('show');
@@ -808,36 +1186,46 @@ button:disabled {
   }
 
   async function placeOrder(){
-    if (cart.length === 0) return showMessage("Your cart is empty", false);
+    if (cart.length === 0) return showMessage("Your cart is empty. Add some items first!", false);
     const name = document.getElementById("custName").value.trim();
     const room = document.getElementById("roomNo").value.trim();
     const mobile = document.getElementById("mobileNo").value.trim();
+    
     if (!name || !room || !mobile) return showMessage("Please fill in all details", false);
+    if (mobile.length < 10) return showMessage("Please enter a valid mobile number", false);
+
+    const btn = document.querySelector(".place-order-btn");
+    const btnText = btn.querySelector("span");
+    const originalText = btnText.textContent;
+    btn.disabled = true;
+    btnText.textContent = "Processing...";
+    btn.innerHTML = '<div class="loading"></div> Processing Order...';
 
     try {
       const snap = await get(ref(db, "items"));
       if (!snap.exists()) return showMessage("Items unavailable", false);
       const items = snap.val();
       
-      // Check stock availability for all items
       for (const c of cart) {
         const stored = items[c.id];
         if (!stored) {
+          btn.disabled = false;
+          btn.innerHTML = `<i class="fas fa-check-circle"></i><span>${originalText}</span>`;
           return showMessage(`Item not found in inventory.`, false);
         }
         if (stored.quantity < c.qty) {
+          btn.disabled = false;
+          btn.innerHTML = `<i class="fas fa-check-circle"></i><span>${originalText}</span>`;
           return showMessage(`Not enough ${stored.name} available. Only ${stored.quantity} left.`, false);
         }
       }
 
-      // Update stock quantities
       const updates = {};
       cart.forEach(c => updates[`items/${c.id}/quantity`] = items[c.id].quantity - c.qty);
       
-      // Create order object
       const order = {
         name,
-        roomNo: room || "320",
+        roomNo: room,
         mobileNo: mobile,
         items: cart.map(c => ({ 
           id: c.id, 
@@ -847,20 +1235,17 @@ button:disabled {
         })),
         total: document.getElementById("total").textContent,
         timestamp: new Date().toISOString(),
-        note: `Deliver to Room ${room || "320"}`
+        status: "pending"
       };
 
-      // Save order and update stock
       const newOrderRef = push(ref(db, "orders"));
       await Promise.all([ 
         set(newOrderRef, order), 
         update(ref(db, "/"), updates) 
       ]);
 
-      // Show success modal
       showOrderModal(order);
 
-      // Clear form and cart
       document.getElementById("custName").value = "";
       document.getElementById("roomNo").value = "320";
       document.getElementById("mobileNo").value = "";
@@ -872,6 +1257,9 @@ button:disabled {
     } catch (err) {
       console.error(err);
       showMessage("Error placing order: " + err.message, false);
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = `<i class="fas fa-check-circle"></i><span>${originalText}</span>`;
     }
   }
 
@@ -888,16 +1276,12 @@ button:disabled {
   }
 
   (async function init(){
-    initCart();
     await seedItemsIfEmpty();
     startItemsListener();
     document.getElementById("roomNo").value = "320";
+    updateCartCount();
   })();
 </script>
 
 </body>
-</html>
-
-
-
-
+</html>s
